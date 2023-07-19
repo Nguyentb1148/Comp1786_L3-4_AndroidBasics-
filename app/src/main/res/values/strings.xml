@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Comp1786__L3-4_AndroidBasics</string>
+    <string-array name="workStatus">
+        <item>Employed</item>
+        <item>Unemployed</item>
+        <item>hỏi chi</item>
+    </string-array>
 </resources>
