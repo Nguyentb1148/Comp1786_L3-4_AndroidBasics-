@@ -7,20 +7,33 @@ import androidx.appcompat.widget.Toolbar;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar myToolBar;
 
+
+    private String[] workStatus ={"Employed", "Unemployed"};
+    Spinner spinner;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {//Create menu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Get a reference from the toolbar
-        myToolBar = findViewById(R.id.toolbar);
+//        myToolBar = findViewById(R.id.toolbar);
+//
+//// Set toolbar as actionbar for the activity
+//        setSupportActionBar(myToolBar);
+        //Get reference to spinner
+        spinner= findViewById(R.id.spinner);
+        // Create an adapter
+        ArrayAdapter<String> dataAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,workStatus);
+        //Connect adepter to spinner
+        spinner.setAdapter(dataAdapter);
 
-// Set toolbar as actionbar for the activity
-        setSupportActionBar(myToolBar);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
