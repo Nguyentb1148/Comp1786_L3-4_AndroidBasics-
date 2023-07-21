@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -27,136 +30,99 @@ import java.time.LocalDate;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar myToolBar;
-    private String[] workStatus ={"Employed", "Unemployed"};
-    Spinner spinner;
-    TextView dobControl;
+    // Define variables to reference the layout
+    EditText nameInput;
+    EditText emailInput;
+    EditText phoneInput;
+    Spinner sp;
+    String workStatus;
     Button submitBtn;
+    TextView dobControl;
+
     //DatePicker Fragment inside MainActivity
-    public  static  class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
-    {
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
         @NonNull
         @Override
-        public  Dialog onCreateDialog (@Nullable Bundle savedInstanceState){
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
             LocalDate d = null;
             int year = 0;
-            int month =0;
-            int day=0 ;
+            int month = 0;
+            int day = 0;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 d = LocalDate.now();
-                year =d.getYear();
-                month=d.getMonthValue();
-                day =d.getDayOfMonth();
+                year = d.getYear();
+                month = d.getMonthValue();
+                day = d.getDayOfMonth();
             }
-            return new DatePickerDialog(getActivity(),this,year,--month,day);
+            return new DatePickerDialog(getActivity(), this, year, --month, day);
         }
+
         @Override
-        public void onDateSet(DatePicker datePicker, int year, int month, int day){
+        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             LocalDate dob = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 dob = LocalDate.of(year, ++month, day);
             }
-            ((MainActivity)getActivity()).updateDOB(dob);
+            ((MainActivity) getActivity()).updateDOB(dob);
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {//Create menu
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    private void getInputs() {
+        nameInput = findViewById(R.id.name_input);
+        emailInput = findViewById(R.id.email_input);
+        phoneInput = findViewById(R.id.phone_input);
 
-        // add date picker
-        dobControl=findViewById(R.id.dob_control);
-        dobControl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogFragment newFragment=new DatePickerFragment();
-                newFragment.show(getSupportFragmentManager(),"datePicker");
-            }
-        });
-        // Get a reference from the toolbar
-//        myToolBar = findViewById(R.id.toolbar);
-//
-//// Set toolbar as actionbar for the activity
-//        setSupportActionBar(myToolBar);
-        //Get reference to spinner
-        spinner= findViewById(R.id.spinner);
-        // Create an adapter
-        ArrayAdapter<String> dataAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,workStatus);
-        //Connect adepter to spinner
-        spinner.setAdapter(dataAdapter);
-        submitBtn=findViewById(R.id.submit_btn);
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CheckBox cb=findViewById(R.id.checkBox);
-                if (!cb.isChecked()){
-                    Toast.makeText(MainActivity.this,"You must check the box",Toast.LENGTH_LONG).show();
-                }
-                getInputs();
-            }
-        });
+        String name = nameInput.getText().toString();
+        String email = emailInput.getText().toString();
+        String phone = phoneInput.getText().toString();
+        workStatus = sp.getSelectedItem().toString();
 
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item){
-        if (item.getItemId() == R.id.itemNext){
-            getInputs();
-            return true;
-        }
-        else if (item.getItemId() == R.id.itemExit){
-            Toast.makeText(
-                    getApplicationContext(),
-                    "You asked to exit, but why not start another app?",
-                    Toast.LENGTH_LONG
-            ).show();
-            return true;
-        }
-        else {
-            return super.onOptionsItemSelected(item);
-        }
+        // Use function displayNextAlert to display an AlertDialog
+        displayNextAlert(name, phone, email, workStatus);
     }
 
-    public void updateDOB(LocalDate dob){
+    public void displayNextAlert(String name, String phone, String email, String workStatus) {
+        new AlertDialog.Builder(this)
+                .setTitle("Details Entered")
+                .setMessage(
+                        "Details: \n" +
+                                name + "\n" +
+                                phone + "\n" +
+                                email + "\n" +
+                                workStatus
+                )
+                .setNeutralButton("Back", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .show();
+    }
+
+    public void updateDOB(LocalDate dob) {
         TextView dobControl = findViewById(R.id.dob_control);
         dobControl.setText(dob.toString());
     }
 
-    //Checking the checkbox
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        // ...
 
-    private void getInputs() {
+        // Refer the Spinner from the layout
+        sp = findViewById(R.id.spinner);
+
+        // Refer the button from the layout
+        submitBtn = findViewById(R.id.submit_btn);
+
+        // Adding behavior to the button
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getInputs();
+            }
+        });
     }
-
 }
-//public class MainActivity extends ListActivity {
-//    private static final String[] WEEKDAYS = new String[]{
-//            "Monday",
-//            "Tuesday",
-//            "Wednesday",
-//            "Thursday",
-//            "Friday",
-//            "Saturday",
-//            "Sunday"
-//    };
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        //setContentView(R.layout.activity_main);
-//        setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, WEEKDAYS));
-//        ListView lv = getListView();
-//        lv.setTextFilterEnabled(true);
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long ig) {
-//                Toast.makeText(getApplicationContext(),
-//                        ((TextView)view).getText(), Toast.LENGTH_SHORT
-//                ).show();
-//            }
-//        });
-//    }
-//}
