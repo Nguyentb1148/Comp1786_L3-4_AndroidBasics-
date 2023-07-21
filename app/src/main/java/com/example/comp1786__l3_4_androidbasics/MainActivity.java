@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] workStatus ={"Employed", "Unemployed"};
     Spinner spinner;
     TextView dobControl;
+    Button submitBtn;
     //DatePicker Fragment inside MainActivity
     public  static  class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
     {
@@ -81,6 +84,17 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> dataAdapter= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,workStatus);
         //Connect adepter to spinner
         spinner.setAdapter(dataAdapter);
+        submitBtn=findViewById(R.id.submit_btn);
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckBox cb=findViewById(R.id.checkBox);
+                if (!cb.isChecked()){
+                    Toast.makeText(MainActivity.this,"You must check the box",Toast.LENGTH_LONG).show();
+                }
+                getInputs();
+            }
+        });
 
     }
     @Override
@@ -112,8 +126,11 @@ public class MainActivity extends AppCompatActivity {
         dobControl.setText(dob.toString());
     }
 
+    //Checking the checkbox
+
     private void getInputs() {
     }
+
 }
 //public class MainActivity extends ListActivity {
 //    private static final String[] WEEKDAYS = new String[]{
